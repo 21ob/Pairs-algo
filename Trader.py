@@ -121,7 +121,7 @@ class TradingEngine:
 
             else:
                 if self.balance < 0:
-                    break
+                    return pd.Series(self.returns, index=pd.to_datetime(dates[:i]))
                 elif buy_signal[i]:
                     self.buy(price=price[i], quantity=buy_signal[i], date=dates[i])
                     
@@ -144,4 +144,4 @@ class TradingEngine:
         # Final close
         self.close_position(price[i], dates[i])
         
-        return pd.Series(self.returns, index=pd.to_datetime(dates[:i]))
+        return pd.Series(self.returns, index=pd.to_datetime(dates))
