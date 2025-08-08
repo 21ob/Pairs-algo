@@ -146,3 +146,7 @@ class TradingEngine:
         self.close_position(price[-1], dates[-1])
         
         return pd.Series(self.returns, index=pd.to_datetime(dates))
+
+
+    def order_quantity(self, signal_strength, price, risk_factor):
+        return abs(risk_factor * signal_strength * self.portfolio_tracker[-1] / price) - abs(self.position)
