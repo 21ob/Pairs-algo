@@ -1,6 +1,6 @@
 # Pairs-algo
 
-**Pairs-algo** is a sample trading algorithm that simulates a cointegrated pairs trading strategy using Brent Crude (BZ=F) and Heating Oil (HO=F) futures. The strategy attempts to exploit mean-reverting behavior in the spread between these two energy products.
+**Pairs-algo** is a sample trading algorithm that simulates a cointegrated pairs trading strategy using different commodity futures contracts. The strategy attempts to exploit mean-reverting behavior in the spread between these two energy products.
 
 ---
 
@@ -26,6 +26,10 @@ A core class responsible for:
 - **Buy Signal:** When the spread drops 2 standard deviations below its long-term moving average.
 - **Sell Signal:** When the spread rises 2 standard deviations above its long-term moving average.
 
+### `strat_3`: Dollar-Neutral Spread with risk controls
+- Trades a **dollar-neutral** version of the spread by estimating a **hedge ratio** using OLS regression. The order size at each signal is dependent on a scalable risk factor, and the strength of the buy / sell signal
+- **Buy Signal:** When the spread drops 2 standard deviations below its long-term moving average.
+- **Sell Signal:** When the spread rises 2 standard deviations above its long-term moving average.
 ---
 
 ## 📝 Notes
