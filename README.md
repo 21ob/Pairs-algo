@@ -18,18 +18,18 @@ A core class responsible for:
 
 ### `strat_1`: Simple 1:1 Spread
 - Trades the **raw price spread** between BZ and HO (equal 1-1 weighting).
-- **Buy Signal:** When the spread drops 2 standard deviations below its long-term moving average.
-- **Sell Signal:** When the spread rises 2 standard deviations above its long-term moving average.
+- **Buy Signal:** When the spread drops n standard deviations below its long-term moving average.
+- **Sell Signal:** When the spread rises n standard deviations above its long-term moving average.
 
 ### `strat_2`: Dollar-Neutral Spread
 - Trades a **dollar-neutral** version of the spread by estimating a **hedge ratio** using OLS regression.
-- **Buy Signal:** When the spread drops 2 standard deviations below its long-term moving average.
-- **Sell Signal:** When the spread rises 2 standard deviations above its long-term moving average.
+- **Buy Signal:** When the spread drops n standard deviations below its long-term moving average.
+- **Sell Signal:** When the spread rises n standard deviations above its long-term moving average.
 
 ### `strat_3`: Dollar-Neutral Spread with risk controls
 - Trades a **dollar-neutral** version of the spread by estimating a **hedge ratio** using OLS regression. The order size at each signal is dependent on a scalable risk factor, and the strength of the buy / sell signal
-- **Buy Signal:** When the spread drops 2 standard deviations below its long-term moving average.
-- **Sell Signal:** When the spread rises 2 standard deviations above its long-term moving average.
+- **Buy Signal:** When the spread drops n standard deviations below its long-term moving average.
+- **Sell Signal:** When the spread rises n standard deviations above its long-term moving average.
 ---
 
 ## 📝 Notes
