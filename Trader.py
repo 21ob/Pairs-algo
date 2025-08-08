@@ -82,6 +82,10 @@ class TradingEngine:
         """Returns the trade log as a pandas DataFrame."""
         return pd.DataFrame(self.trade_log)
 
+    
+    def calc_quantity(self, signal_strength, price, risk_factor):
+        return abs(risk_factor * signal_strength * self.portfolio_tracker[-1] / price)
+
         
     def run_strategy(
         self, 
@@ -90,7 +94,8 @@ class TradingEngine:
         price, 
         close_price, 
         dates, 
-        allow_negative_balance=False):
+        allow_negative_balance=False,
+        risk_factor = 0.01):
         """
         Iterates over signals and executes trades accordingly. Position exit based on mean reversion.
     
@@ -101,6 +106,7 @@ class TradingEngine:
             close_price (array-like): Price at which the position will be closed if crossed.
             timesteps (int): Number of iterations or data points.
             allow_negative_balance (boolean): Whether or not the traders balance is allowed to run below zero, default=True
+            risk_factor (float): Scales the amount of risk the trader is willing to take in each order
             
         Returns:
             pd.Series of daily returns
@@ -111,10 +117,12 @@ class TradingEngine:
         for i in range(timesteps):
             if allow_negative_balance:
                 if buy_signal[i]:
-                    self.buy(price=price[i], quantity=buy_signal[i], date=dates[i])
+                    order_qty = self.calc_quantity(buy_signal[i], price[i], risk_factor)
+                    self.buy(price=price[i], quantity=order_qty, date=dates[i])
                     
                 elif sell_signal[i]:
-                    self.sell(price=price[i], quantity=sell_signal[i], date=dates[i])
+                    order_qty = -self.calc_quantity(sell_signal[i], price[i], risk_factor)
+                    self.sell(price=price[i], quantity=order_qty, date=dates[i])
             
                 elif (((self.position > 0) & (price[i] > close_price[i])) | ((self.position < 0) & (price[i] < close_price[i]))):
                     self.close_position(price[i], date=dates[i])
@@ -123,11 +131,14 @@ class TradingEngine:
                 if self.balance < 0:
                     self.close_position(price[i], dates[i])
                     return pd.Series(self.returns, index=pd.to_datetime(dates[:i]))
+                    
                 elif buy_signal[i]:
-                    self.buy(price=price[i], quantity=buy_signal[i], date=dates[i])
+                    order_qty = self.calc_quantity(buy_signal[i], price[i], risk_factor)
+                    self.buy(price=price[i], quantity=order_qty, date=dates[i])
                     
                 elif sell_signal[i]:
-                    self.sell(price=price[i], quantity=sell_signal[i], date=dates[i])
+                    order_qty = -self.calc_quantity(sell_signal[i], price[i], risk_factor)
+                    self.sell(price=price[i], quantity=order_qty, date=dates[i])
             
                 elif (((self.position > 0) & (price[i] > close_price[i])) | ((self.position < 0) & (price[i] < close_price[i]))):
                     self.close_position(price[i], date=dates[i])
@@ -146,7 +157,3 @@ class TradingEngine:
         self.close_position(price[-1], dates[-1])
         
         return pd.Series(self.returns, index=pd.to_datetime(dates))
-
-
-    def order_quantity(self, signal_strength, price, risk_factor):
-        return abs(risk_factor * signal_strength * self.portfolio_tracker[-1] / price) - abs(self.position)
